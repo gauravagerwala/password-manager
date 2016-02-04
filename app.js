@@ -57,12 +57,13 @@ var command = argv._[0];
 function getAccounts(masterPassword){
 
   var encryptedAccounts = storage.getItemSync('accounts');
+  var decryptedAccounts = [];
+
+  //decrypt
+  if(typeof encryptedAccounts !== 'undefined'){
 
   var bytes = crypto.AES.decrypt(accounts,masterPassword);
-  var decryptedAccounts = JSON.parse(bytes.toString(crypto.enc,UTF8));
-
-  if(typeof decryptedAccounts === 'undefined'){
-    decryptedAccounts =[];
+  var decryptedAccounts = JSON.parse(bytes.toString(crypto.enc,Utf8));
   }
 
   return decryptedAccounts;
@@ -70,10 +71,12 @@ function getAccounts(masterPassword){
 
 function saveAccounts(accounts, masterPassword){
 
+  //encrypt
   var encryptedAccounts = crypto.AES.encrypt(JSON.stringify(accounts), masterPassword);
 
-  storage.setItemSync('accounts');
+  storage.setItemSync('accounts', encryptedAccounts);
 
+  return encryptedAccounts;
 }
 
 function createAccount(account, masterPassword){
@@ -87,7 +90,7 @@ function createAccount(account, masterPassword){
 }
 
 function getAccount(accountName, masterPassword){
-  var accounts = storage.getItemSync('accounts');
+  var accounts = getAccounts(masterPassword);
 
   var matchedAccount;
   accounts.forEach(function(account){
