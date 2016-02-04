@@ -62,8 +62,8 @@ function getAccounts(masterPassword){
   //decrypt
   if(typeof encryptedAccounts !== 'undefined'){
 
-  var bytes = crypto.AES.decrypt(accounts,masterPassword);
-  var decryptedAccounts = JSON.parse(bytes.toString(crypto.enc,Utf8));
+  var bytes = crypto.AES.decrypt(encryptedAccounts,masterPassword);
+  decryptedAccounts = JSON.parse(bytes.toString(crypto.enc.Utf8));
   }
 
   return decryptedAccounts;
@@ -74,7 +74,7 @@ function saveAccounts(accounts, masterPassword){
   //encrypt
   var encryptedAccounts = crypto.AES.encrypt(JSON.stringify(accounts), masterPassword);
 
-  storage.setItemSync('accounts', encryptedAccounts);
+  storage.setItemSync('accounts', encryptedAccounts.toString());
 
   return encryptedAccounts;
 }
